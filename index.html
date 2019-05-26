@@ -32,6 +32,18 @@
                             v-bind:class="item.completed ? ['list-group-item-danger', 'finished'] : ''" 
                             @click="changeState(index)">
                             <i class="fas fa-tasks mr-2"></i> {{ item.keep }}
+                            <div class="float-right">
+                                <!-- Button trigger modal -->
+                                <a href="#" 
+                                    title="Editar tarea" 
+                                    class="btn btn-primary" 
+                                    data-toggle="modal" 
+                                    data-target="#exampleModal" v-on:click="activeEditKeep(index)">
+                                    <i class="far fa-edit fa-xs"></i>
+                                </a>
+                                <a href="#" title="Eliminar tarea" class="btn btn-danger" v-on:click.stop="deleteKeep(index)"><i class="fas fa-trash fa-xs"></i></i></a>
+                                
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -45,6 +57,44 @@
                 </div>
             </div>
         </div>
+
+    <!-- Modal editar keep-->
+    <div class="modal fade" 
+        id="exampleModal" 
+        tabindex="-1" 
+        role="dialog" 
+        aria-labelledby="exampleModalLabel" 
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="far fa-edit mr-2"></i> Editar Tarea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Nuevo nombre tarea</label>
+                            <input type="text" class="form-control" id="recipient-name" v-model="editar.item">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" 
+                            class="btn btn-primary" 
+                            v-on:click="editKeep()"
+                            data-dismiss="modal"
+                            >
+                            Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fin modal editar keep -->
     </div>
     <script src="vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
