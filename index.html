@@ -13,37 +13,103 @@
 
     <div id="appVue">
         <div class="container mt-2">
-            <div class="row">
+            <div class="row my-3">
                 <div class="col-sm-6">
-                    <h1 v-if="lists.length">Agregar una tarea</h1>
-                    <h1 v-else>Crear una tarea</h1>
-                    <input type="text" 
-                        class="form-control" 
-                        v-model="newKeep" 
-                        v-on:keyup.enter="addKeep" 
-                        placeholder="Escriba una tarea">
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <h4 v-if="lists.length">Agregar una tarea</h4>
+                            <h4 v-else>Crear una tarea</h4>
+                            <input type="text" 
+                                class="form-control" 
+                                v-model="newKeep" 
+                                v-on:keyup.enter="addKeep" 
+                                placeholder="Escriba una tarea">
+                        </div>
+                        <div class="col-sm-12">
+                            <h4 v-if="!lists.length">No hay tareas registradas para buscar</h4>
+                            <template v-else>
+                                <div>
+                                    <h4>Buscar una tarea</h4>
+                                    <input type="text" 
+                                        class="form-control" 
+                                        v-model="search.item"
+                                        placeholder="Buscar una tarea">
+                                </div>
+                            </template>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-6">
-                        <h1 v-if="lists.length">Listado de tareas</h1>
-                        <h1 v-else>No hay tareas registradas</h1>
+                    <h4 v-if="lists.length">Listado de tareas</h4>
+                    <h4 v-else>No hay tareas registradas</h4>
                     <ul class="list-group">
                         <li class="list-group-item" 
-                            v-for="(item, index) in lists" :key="index" 
-                            v-bind:class="item.completed ? ['list-group-item-danger', 'finished'] : ''" 
-                            @click="changeState(index)">
-                            <i class="fas fa-tasks mr-2"></i> {{ item.keep }}
-                            <div class="float-right">
-                                <!-- Button trigger modal -->
-                                <a href="#" 
-                                    title="Editar tarea" 
-                                    class="btn btn-primary" 
-                                    data-toggle="modal" 
-                                    data-target="#exampleModal" v-on:click="activeEditKeep(index)">
-                                    <i class="far fa-edit fa-xs"></i>
-                                </a>
-                                <a href="#" title="Eliminar tarea" class="btn btn-danger" v-on:click.stop="deleteKeep(index)"><i class="fas fa-trash fa-xs"></i></i></a>
-                                
+                            v-for="(item, index) in searchTasks" :key="index"  
+                            >
+                            <div class="container d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-tasks mr-2"></i> {{ item.keep }}</span>
+                                <!-- contiene los botones -->
+                                <div class="float-right">
+                                    <!-- Button trigger modal: editar tarea -->
+                                    <a href="#"
+                                        title="Editar tarea" 
+                                        class="btn btn-primary" 
+                                        data-toggle="modal" 
+                                        data-target="#exampleModal" v-on:click="activeEditKeep(index)">
+                                        <i class="far fa-edit fa-xs"></i>
+                                    </a>
+                                    <!-- -Button terminar tarea -->
+                                    <a href="#" 
+                                        title="Terminar tarea" 
+                                        class="btn btn-success"
+                                        v-on:click.stop="finishedKeep(index)">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <!-- Button que elimina tarea -->
+                                    <a href="#" title="Eliminar tarea" class="btn btn-danger" v-on:click.stop="deleteKeep(index)"><i class="fas fa-trash fa-xs"></i></a>
+                                </div>
                             </div>
+                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4 v-if="finishedList.length">Tareas terminadas</h4>
+                    <h4 v-else>No hay tareas terminadas</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item" 
+                            v-for="(item, index) in finishedList" 
+                            :key="index"
+                            v-bind:class="item.completed ? ['list-group-item-success', 'finished'] : ''" 
+                            v-bind:title="item.keep">
+                            {{item.keep}}
+                            <span class="float-right">
+                                <button class="btn btn-outline-success" 
+                                        title="Revertir tarea" 
+                                        v-on:click="undoTaskFinished(index)">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <h4 v-if="deletedList.length">Tareas eliminadas</h4>
+                    <h4 v-else>No hay tareas tareas eliminadas</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-danger" 
+                            v-for="(item, index) in deletedList" 
+                            :key="index">
+                            {{item.keep}}
+                            <span class="float-right">
+                                <button class="btn btn-outline-danger" 
+                                        title="Revertir tarea" 
+                                        v-on:click="undoTaskDeleted(index)">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </span>
                         </li>
                     </ul>
                 </div>
