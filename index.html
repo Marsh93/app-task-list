@@ -7,7 +7,12 @@
     <title>Vue js</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/vue2-animate/dist/vue2-animate.min.css"/> -->
+    <!-- CSS custom -->
     <link rel="stylesheet" href="style.css">
+    
 </head>
 <body>
 
@@ -28,13 +33,11 @@
                         <div class="col-sm-12">
                             <h4 v-if="!lists.length">No hay tareas registradas para buscar</h4>
                             <template v-else>
-                                <div>
                                     <h4>Buscar una tarea</h4>
                                     <input type="text" 
                                         class="form-control" 
                                         v-model="search.item"
                                         placeholder="Buscar una tarea">
-                                </div>
                             </template>
                         </div>
                     </div>
@@ -43,34 +46,39 @@
                     <h4 v-if="lists.length">Listado de tareas</h4>
                     <h4 v-else>No hay tareas registradas</h4>
                     <ul class="list-group">
-                        <li class="list-group-item" 
-                            v-for="(item, index) in searchTasks" :key="index"  
-                            >
-                            <div class="container d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-tasks mr-2"></i> {{ item.keep }}</span>
-                                <!-- contiene los botones -->
-                                <div class="float-right">
-                                    <!-- Button trigger modal: editar tarea -->
-                                    <a href="#"
-                                        title="Editar tarea" 
-                                        class="btn btn-primary" 
-                                        data-toggle="modal" 
-                                        data-target="#exampleModal" v-on:click="activeEditKeep(index)">
-                                        <i class="far fa-edit fa-xs"></i>
-                                    </a>
-                                    <!-- -Button terminar tarea -->
-                                    <a href="#" 
-                                        title="Terminar tarea" 
-                                        class="btn btn-success"
-                                        v-on:click.stop="finishedKeep(index)">
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                    <!-- Button que elimina tarea -->
-                                    <a href="#" title="Eliminar tarea" class="btn btn-danger" v-on:click.stop="deleteKeep(index)"><i class="fas fa-trash fa-xs"></i></a>
+                        <transition-group 
+                            name="list" 
+                            tag="ul" 
+                            class="list-group">
+
+                            <li class="list-group-item" 
+                                v-for="(item, index) in searchTasks" :key="item.id">
+                                <div class="container d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-tasks mr-2"></i> {{ item.keep }}</span>
+                                    <!-- contiene los botones -->
+                                    <div class="float-right">
+                                        <!-- Button trigger modal: editar tarea -->
+                                        <a href="#"
+                                            title="Editar tarea" 
+                                            class="btn btn-primary" 
+                                            data-toggle="modal" 
+                                            data-target="#exampleModal" v-on:click="activeEditKeep(index)">
+                                            <i class="far fa-edit fa-xs"></i>
+                                        </a>
+                                        <!-- -Button terminar tarea -->
+                                        <a href="#" 
+                                            title="Terminar tarea" 
+                                            class="btn btn-success"
+                                            v-on:click="finishedKeep(index)">
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                        <!-- Button que elimina tarea -->
+                                        <a href="#" title="Eliminar tarea" class="btn btn-danger" v-on:click="deleteKeep(index)"><i class="fas fa-trash fa-xs"></i></a>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                        </li>
+                            </li>
+                        
+                        </transition-group>
                     </ul>
                 </div>
             </div>
@@ -79,41 +87,58 @@
                     <h4 v-if="finishedList.length">Tareas terminadas</h4>
                     <h4 v-else>No hay tareas terminadas</h4>
                     <ul class="list-group">
-                        <li class="list-group-item" 
-                            v-for="(item, index) in finishedList" 
-                            :key="index"
-                            v-bind:class="item.completed ? ['list-group-item-success', 'finished'] : ''" 
-                            v-bind:title="item.keep">
-                            {{item.keep}}
-                            <span class="float-right">
-                                <button class="btn btn-outline-success" 
-                                        title="Revertir tarea" 
-                                        v-on:click="undoTaskFinished(index)">
-                                    <i class="fas fa-undo"></i>
-                                </button>
-                            </span>
-                        </li>
+                        <transition-group 
+                            name="list" 
+                            tag="ul" 
+                            class="list-group">
+                            <li class="list-group-item" 
+                                v-for="(item, index) in finishedList" 
+                                :key="item.id"
+                                v-bind:class="item.completed ? ['list-group-item-success', 'finished'] : ''" 
+                                v-bind:title="item.keep">
+                                {{item.keep}} - {{index }}
+                                <span class="float-right">
+                                    <button class="btn btn-outline-success" 
+                                            title="Revertir tarea" 
+                                            v-on:click="undoTaskFinished(index)">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </span>
+                            </li>
+                        </transition-group>
                     </ul>
                 </div>
                 <div class="col-sm-6">
                     <h4 v-if="deletedList.length">Tareas eliminadas</h4>
                     <h4 v-else>No hay tareas tareas eliminadas</h4>
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-danger" 
-                            v-for="(item, index) in deletedList" 
-                            :key="index">
-                            {{item.keep}}
-                            <span class="float-right">
-                                <button class="btn btn-outline-danger" 
-                                        title="Revertir tarea" 
-                                        v-on:click="undoTaskDeleted(index)">
-                                    <i class="fas fa-undo"></i>
-                                </button>
-                            </span>
-                        </li>
-                    </ul>
+                    <!-- <ul class="list-group"> -->
+                        <transition-group name="fadeLeft" class="list-group" enter-active-class="animated bounceIn">
+                            <li class="list-group-item list-group-item-danger" 
+                                v-for="(item, index) in deletedList" 
+                                :key="item.id">
+                                {{item.keep}}
+                                <span class="float-right">
+                                    <button class="btn btn-outline-danger" 
+                                            title="Revertir tarea" 
+                                            v-on:click="undoTaskDeleted(index)">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </span>
+                            </li>
+                        </transition-group>
+                    <!-- </ul> -->
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>Nuestras redes sociales</h4>
+                    <div class="d-flex justify-content-around">
+                        <a :href="url.google"><i class="fas fa-globe fa-2x"></i></a>
+                        <a :href="url.youtube"><i class="fab fa-youtube fa-2x"></i></a>
+                        <a :href="url.facebook"><i class="fab fa-facebook-square fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>  
             <div class="row">
                 <div class="col-sm-12">
                     <hr>

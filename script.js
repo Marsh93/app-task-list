@@ -2,24 +2,31 @@ new Vue({
     el:'#appVue',
     data: {
         lists: [
-            { keep: 'Salir a correr en la madrugadas', completed: false },
-            { keep: 'Ducharse', completed: false },
-            { keep: 'Aprender algo', completed: false },
+            { id: 1, keep: 'Salir a correr en la madrugadas', completed: false },
+            { id: 2,keep: 'Ducharse', completed: false },
+            { id: 3, keep: 'Aprender algo', completed: false },
         ],
         finishedList: [],
         deletedList: [],
+        url: {
+            google: 'https://google.com.pe',
+            youtube: 'https://youtube.com.pe',
+            facebook: 'https://facebook.com.pe',
+        },
         newKeep: '',
         search: {
             item: '', // item a buscar
         },
         editar: {
-            item: '', //almacena el nombre de la tarea a editar
+            item: 'adadaad', //almacena el nombre de la tarea a editar
             index: '', // almacena la posición de la tarea que vamos a editar
         }
     },
     computed: {
         searchTasks: function () {
-            return this.lists.filter( item => item.keep.includes(this.search.item) );
+            let filter = new RegExp(this.search.item, 'i');
+            return this.lists.filter( item => item.keep.match(filter) );
+            // return this.lists.filter( item => item.keep.includes(this.search.item) );
         }
     },
     methods: {
